@@ -20,42 +20,31 @@ std::vector<float> interpolateSingleFloats(float from, float to, int numOfValues
 void draw(DrawingWindow &window) {
 	window.clearPixels();
 	std::vector<float> grayscale = interpolateSingleFloats(255, 0, window.width);
-	int i = 0;
+	//int i = 0;
 
 	// Triangle co-ordinates
 	glm::vec2 v0(0,HEIGHT); // red
 	glm::vec2 v1(WIDTH/2, 0); // green
 	glm::vec2 v2(WIDTH, HEIGHT); // blue
+
 	// Colours
 	glm::vec3 red(255,0,0);
 	glm::vec3 green(0,255,0);
 	glm::vec3 blue(0,0,255);
 
-
-//	int l = WIDTH/2; int r = l+1;
-//  for (size_t y = 0; y < window.height; y++) {
 	for (size_t y = 0; y < window.height; y++) {
-//      for (size_t x = l; x < r; x++) {
 		for (size_t x = 0; x < window.width; x++) {
             glm::vec2 cur(x,y);
             glm::vec3 proximities = convertToBarycentricCoordinates(v0,v1,v2,cur);
-//			float v1dist = glm::distance(v1, cur) / glm::distance(v0,v1);
-//			float v2dist = glm::distance(v2, cur) / glm::distance(v0,v2);
-//			float v0dist = 1 - v1dist - v2dist;
-			float red = proximities[0] * 255;
-			float green = proximities[1] * 255;
-			float blue = proximities[2] * 255;
-            if (proximities[0]+proximities[1]+proximities[2] != 1) {
-                red = 0;
-                green = 0;
-                blue = 0;
-            }
-			uint32_t colour = (255 << 24) + (int(red) << 16) + (int(green) << 8) + int(blue);
-			window.setPixelColour(x, y, colour);
-			i += 1;
+
+			if (proximities[0] > 0 and proximities[1] > 0 and proximities[2] > 0) {
+				float red = proximities[0] * 255;
+				float green = proximities[1] * 255;
+				float blue = proximities[2] * 255;
+				uint32_t colour = (255 << 24) + (int(red) << 16) + (int(green) << 8) + int(blue);
+				window.setPixelColour(x, y, colour);
+			}
 		}
-//		l --;
-//		r ++;
 	}
 }
 
